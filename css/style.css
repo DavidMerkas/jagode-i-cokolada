@@ -1369,10 +1369,10 @@ section { padding: 80px 0; }
 }
 .contact-thumb {
   width: 100%;
-  height: 100%;
-  min-height: 190px;
+  height: 190px;
   border-radius: 8px;
   object-fit: cover;
+  object-position: top;
 }
 .contact-thumb-placeholder {
   display: flex;
@@ -1408,7 +1408,7 @@ section { padding: 80px 0; }
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr;
   gap: 40px;
   margin-bottom: 48px;
 }
@@ -1419,6 +1419,14 @@ section { padding: 80px 0; }
   font-size: 1.25rem;
   margin: 0 0 14px;
 }
+.footer-brand {
+  display: inline-flex;
+  align-items: flex-start;
+  text-align: left;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+.footer-brand .brand-name { font-size: 1.7rem; }
 .footer-kicker {
   display: block;
   font-size: 0.72rem;
@@ -1469,7 +1477,7 @@ section { padding: 80px 0; }
 @media (max-width: 860px) {
   .split, .contact-grid { grid-template-columns: 1fr; }
   .contact-location-top { grid-template-columns: 1fr; }
-  .contact-thumb { min-height: 220px; }
+  .contact-thumb { height: 220px; }
   .feature-grid { grid-template-columns: 1fr; grid-template-rows: none; }
   .feature-lg { grid-row: auto; }
   .feature-card { min-height: 260px; }
@@ -1560,3 +1568,38 @@ body.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-6px) rotat
   .footer-bottom { justify-content: center; text-align: center; }
   .gallery-grid { grid-template-columns: 1fr; }
 }
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+.stagger > * {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.stagger.in-view > * { opacity: 1; transform: translateY(0); }
+.stagger > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger > *:nth-child(3) { transition-delay: 0.2s; }
+.stagger > *:nth-child(4) { transition-delay: 0.3s; }
+.stagger > *:nth-child(5) { transition-delay: 0.4s; }
+.stagger > *:nth-child(6) { transition-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .stagger > * { opacity: 1; transform: none; transition: none; }
+}
+
+/* Hover polish */
+.review-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 14px rgba(60, 64, 67, 0.15), 0 8px 26px rgba(60, 64, 67, 0.12);
+}
+.why-icon { transition: transform 0.25s ease, background 0.25s ease; }
+.why-item:hover .why-icon { transform: scale(1.1); }
+.timeline-dot { transition: transform 0.25s ease; }
+.timeline-item:hover .timeline-dot { transform: scale(1.3); }

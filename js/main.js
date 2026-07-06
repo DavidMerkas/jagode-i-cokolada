@@ -1,3 +1,24 @@
+// Scroll reveal
+document.addEventListener('DOMContentLoaded', function () {
+  var targets = document.querySelectorAll('.reveal, .stagger');
+  if (!targets.length) return;
+
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(function (el) { el.classList.add('in-view'); });
+    return;
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in-view');
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.01, rootMargin: '0px 0px 150px 0px' });
+
+  targets.forEach(function (el) { io.observe(el); });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   var toggle = document.querySelector('.nav-toggle');
   var nav = document.querySelector('.main-nav');
