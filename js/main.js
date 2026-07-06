@@ -1,0 +1,89 @@
+document.addEventListener('DOMContentLoaded', function () {
+  var toggle = document.querySelector('.nav-toggle');
+  var nav = document.querySelector('.main-nav');
+  if (!toggle || !nav) return;
+
+  function setOpen(open) {
+    nav.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Zatvori izbornik' : 'Izbornik');
+  }
+
+  toggle.addEventListener('click', function () {
+    setOpen(!nav.classList.contains('open'));
+  });
+
+  nav.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () { setOpen(false); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setOpen(false);
+  });
+});
+
+// Galerija lightbox
+document.addEventListener('DOMContentLoaded', function () {
+  var lightbox = document.getElementById('lightbox');
+  if (!lightbox) return;
+
+  // Dupliciraj sadržaj svake trake za bešavnu petlju
+  document.querySelectorAll('.marquee-track').forEach(function (track) {
+    track.innerHTML += track.innerHTML;
+  });
+
+  var lbImg = lightbox.querySelector('img');
+  var closeBtn = lightbox.querySelector('.lightbox-close');
+  var prevBtn = lightbox.querySelector('.lightbox-prev');
+  var nextBtn = lightbox.querySelector('.lightbox-next');
+
+  var current = [];   // { src, alt } jedinstvene slike trenutnog reda
+  var index = 0;
+
+  function show(i) {
+    if (!current.length) return;
+    index = (i + current.length) % current.length;
+    lbImg.src = current[index].src;
+    lbImg.alt = current[index].alt || '';
+  }
+  function open(track, src) {
+    // Skupi jedinstvene slike iz reda (traka je duplicirana za petlju)
+    var seen = {};
+    current = [];
+    track.querySelectorAll('.m-item img').forEach(function (img) {
+      if (seen[img.src]) return;
+      seen[img.src] = true;
+      current.push({ src: img.src, alt: img.alt });
+    });
+    var start = current.findIndex(function (o) { return o.src === src; });
+    show(start < 0 ? 0 : start);
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.m-item').forEach(function (item) {
+    item.addEventListener('click', function () {
+      var img = item.querySelector('img');
+      var track = item.closest('.marquee-track');
+      if (img && track) open(track, img.src);
+    });
+  });
+
+  prevBtn.addEventListener('click', function (e) { e.stopPropagation(); show(index - 1); });
+  nextBtn.addEventListener('click', function (e) { e.stopPropagation(); show(index + 1); });
+  closeBtn.addEventListener('click', close);
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === 'ArrowLeft') show(index - 1);
+    else if (e.key === 'ArrowRight') show(index + 1);
+  });
+});
