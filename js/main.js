@@ -44,15 +44,56 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+// Animirani social-proof brojač (zvjezdice + broj recenzija)
+document.addEventListener('DOMContentLoaded', function () {
+  var stat = document.querySelector('.proof-stat');
+  if (!stat) return;
+  var counter = stat.querySelector('.count-number');
+  var target = counter ? parseInt(counter.getAttribute('data-target'), 10) || 0 : 0;
+
+  function runCount() {
+    var duration = 1800;
+    var start = null;
+    function step(ts) {
+      if (start === null) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      counter.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function trigger() {
+    stat.classList.add('in-view');
+    if (counter) runCount();
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    trigger();
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        trigger();
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.4 });
+    io.observe(stat);
+  }
+});
+
+// Marquee trake — dupliciraj sadržaj svake trake za bešavnu petlju
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.marquee-track').forEach(function (track) {
+    track.innerHTML += track.innerHTML;
+  });
+});
+
 // Galerija lightbox
 document.addEventListener('DOMContentLoaded', function () {
   var lightbox = document.getElementById('lightbox');
   if (!lightbox) return;
-
-  // Dupliciraj sadržaj svake trake za bešavnu petlju
-  document.querySelectorAll('.marquee-track').forEach(function (track) {
-    track.innerHTML += track.innerHTML;
-  });
 
   var lbImg = lightbox.querySelector('img');
   var closeBtn = lightbox.querySelector('.lightbox-close');
