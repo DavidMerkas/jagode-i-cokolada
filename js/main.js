@@ -1,4 +1,7 @@
-// Scroll reveal
+// Scroll reveal — enhances already-visible content; never gates it.
+// Elements start visible via a fallback timer, so a slow/blocked observer
+// (fast scroll jumps, backgrounded tabs, headless renderers) can never
+// leave a section blank.
 document.addEventListener('DOMContentLoaded', function () {
   var targets = document.querySelectorAll('.reveal, .stagger');
   if (!targets.length) return;
@@ -14,9 +17,20 @@ document.addEventListener('DOMContentLoaded', function () {
       entry.target.classList.add('in-view');
       io.unobserve(entry.target);
     });
-  }, { threshold: 0.01, rootMargin: '0px 0px 150px 0px' });
+  }, { threshold: 0.01, rootMargin: '200px 0px 400px 0px' });
 
   targets.forEach(function (el) { io.observe(el); });
+
+  // Safety net: force-reveal anything the observer hasn't caught yet,
+  // so a section can never ship (or stay) blank.
+  setTimeout(function () {
+    targets.forEach(function (el) {
+      if (!el.classList.contains('in-view')) {
+        el.classList.add('in-view');
+        io.unobserve(el);
+      }
+    });
+  }, 2500);
 });
 
 document.addEventListener('DOMContentLoaded', function () {
