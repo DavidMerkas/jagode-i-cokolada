@@ -1211,19 +1211,33 @@ section { padding: 80px 0; }
 .gallery-row { margin-bottom: 52px; }
 .gallery-row:last-child { margin-bottom: 0; }
 .gallery-row-head {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin-bottom: 20px;
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto 28px;
 }
 .gallery-row-head h2 {
   font-family: var(--font-display);
-  font-size: 1.7rem;
+  font-size: 2rem;
   color: var(--green);
   margin: 0;
+  position: relative;
+  display: inline-block;
 }
+.gallery-row-head h2::after {
+  content: "";
+  display: block;
+  width: 54px;
+  height: 3px;
+  margin: 10px auto 0;
+  border-radius: 2px;
+  background: var(--straw);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gallery-row-head.in-view h2::after { transform: scaleX(1); }
 .gallery-row-head p {
-  margin: 0;
+  margin: 8px 0 0;
   color: var(--choc-soft);
   font-size: 0.95rem;
 }
