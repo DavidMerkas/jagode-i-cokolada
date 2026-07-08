@@ -38,11 +38,28 @@ document.addEventListener('DOMContentLoaded', function () {
   var nav = document.querySelector('.main-nav');
   if (!toggle || !nav) return;
 
+  var scrollY = 0;
+
   function setOpen(open) {
     nav.classList.toggle('open', open);
     document.body.classList.toggle('menu-open', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     toggle.setAttribute('aria-label', open ? 'Zatvori izbornik' : 'Izbornik');
+
+    // Zaključaj scroll pozadine dok je meni otvoren, inače elastic/bounce
+    // scroll na mobitelu (osobito iOS Safari) na trenutak otkrije sadržaj
+    // ispod fiksiranog izbornika (npr. footer).
+    if (open) {
+      scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = -scrollY + 'px';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, scrollY);
+    }
   }
 
   toggle.addEventListener('click', function () {
